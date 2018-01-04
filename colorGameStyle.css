@@ -1,0 +1,47 @@
+body {
+    background-color: #424242;
+    color: #FAFAFA;
+    margin: 0;
+}
+
+#header {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #26A69A;    
+}
+h1 {
+    margin: 0;
+    padding: 0.5em;
+    text-align: center;
+}
+#findColor {
+    background-color: #424242;
+    margin: 0;
+    padding: 0.5em;
+    text-align: center;
+}
+.stripe > * {
+    width: 30%;   
+}
+button {
+    background-color: transparent;
+    border: none;
+    color: #FAFAFA;
+    cursor: pointer;
+    margin: 1em 1.66%;
+}
+span.mode {
+    padding-left: 5em;
+}
+#content {
+    width: 480px;
+    margin: 0 auto;
+    padding-top: 1em;
+}
+div.square {
+    width: 30%;
+    margin: 1.66%;
+    padding-bottom: 28%;
+    background-color: #F06292;
+    float: left;
+}
