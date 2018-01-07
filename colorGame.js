@@ -1,53 +1,110 @@
-var colors = [
-    "rgb(255, 167, 38)",
-    "rgb(139, 195, 74)",
-    "rgb(213, 0, 249)",
-    "rgb(191, 54, 12)",
-    "rgb(236, 64, 122)",
-    "rgb(183, 28, 28)"
-];
-
 var squares = document.querySelectorAll(".square");
 var displayedColor = document.getElementById("findColor");
 var message = document.getElementById("message");
-var reset = document.querySelector("button");
-var colorKey = Math.floor(Math.random()*colors.length);
-console.log(colorKey);
+var newGame = document.querySelector("button");
+var easyBtn = document.getElementById("easy");
+var hardBtn = document.getElementById("hard");
+var easy = 1;
+var hard = 0;
 
-// displayedColor.textContent = colors[1];
-// displayedColor.textContent = colors[Math.floor(Math.random()*6)];
+// Set difficulty level to easy
+easyBtn.addEventListener("click", function() {
+    easy = 1;
+    hard = 0;
+    reset();
+});
 
-for(var i = 0; i < squares.length; i++) {
-    squares[i].style.backgroundColor = colors[i];
-    displayedColor.textContent = squares[Math.floor(Math.random()*squares.length)].style.backgroundColor;
-    squares[i].addEventListener("click", isMatching);
-};
+// Set difficulty level to hard
+hardBtn.addEventListener("click", function() {
+    easy = 0;
+    hard = 1;
+    hardReset();
+});
 
-// reset.addEventListener("click", function() {
-//     for(var i = 0; i < squares.length; i++) {
-//         // for(var j = 0; j < squares.length; j++) {
-//         //     squares[i].style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-//         //     // if (squares[i].style.backgroundColor === squares[j].style.backgroundColor) {
-//         //     //     squares[i].style.backgroundColor = colors[(Math.floor(Math.random()*colors.length))-2];
-//         //     // } 
-//         // }
-//         squares[i].style.backgroundColor = colors[i];
-//         displayedColor.textContent = squares[Math.floor(Math.random()*squares.length)].style.backgroundColor;
-//         // squares[i].addEventListener("click", isMatching);
-//     };
-// });
+// Start at difficulty level easy on load
+reset();
 
-function isMatching() {
-    // alert("clicked");
-    if(this.style.backgroundColor === displayedColor.textContent) {
-        // alert("right");
-        for(var i = 0; i < squares.length; i++) {
-            squares[i].style.backgroundColor = this.style.backgroundColor;
+// Begin new game depending on previous difficulty level
+newGame.addEventListener("click", function() {
+    if(easy === 0) {
+        hardReset();
+    } else {
+        reset();
+    }
+});
+
+
+// Reset game to easy
+function reset() {
+    // Remove button highlight for level hard
+    hardBtn.classList.remove("bg-color");
+    // Add button highlight for level easy
+    easyBtn.classList.add("bg-color");
+    // Reset feedback message
+    message.textContent = "";
+    // Loop through each square
+    for(var i = 0; i < squares.length; i++) { 
+        // Assign random color to each square
+        squares[i].style.backgroundColor = "rgb(" + randomColors() + ", " + randomColors() + ", " + randomColors() + ")";
+        // Display the color code to pick from the squares
+        displayedColor.textContent = squares[Math.floor(Math.random()*squares.length)].style.backgroundColor;
+        // Check to see if the color code from clicked square matches the displayed color code
+        squares[i].addEventListener("click", isMatching);
+    }; 
+}
+
+// Reset game to hard
+function hardReset() {
+    // Remove button highlight for level easy
+    easyBtn.classList.remove("bg-color");
+    // Add button highlight for level hard
+    hardBtn.classList.add("bg-color");
+    // Reset feedback message
+    message.textContent = "";
+    // Generate initial color code
+    var generatedColor = [];
+    randomize();
+    for(var i = 0; i < squares.length; i++) { 
+        // Set the values to change slightly from the inital color code and assign it to each square
+        squares[i].style.backgroundColor = "rgb(" + (generatedColor[0]+(i*20)) + ", " + (generatedColor[1]+(i*20)) + ", " + (generatedColor[2]+(i*20)) + ")";
+        // Display the color code to pick from the squares
+        displayedColor.textContent = squares[Math.floor(Math.random()*squares.length)].style.backgroundColor;
+        // Check to see if the color code from clicked square matches the displayed color code
+        squares[i].addEventListener("click", isMatching);
+    };
+    // Randomize the initial color code for each play
+    function randomize() {
+        for(var r = 0; r < 3; r++) {
+            var x = Math.floor(Math.random()*245);
+            generatedColor.push(x);
         }
+    };
+}
+
+// Randomize the color codes for easy level for each play
+function randomColors() {
+    return Math.floor(Math.random()*256);
+}
+
+// Function to check if color code from the picked square matches the displayed code
+function isMatching() {
+    // When color codes match
+    if(this.style.backgroundColor === displayedColor.textContent) {
+        for(var i = 0; i < squares.length; i++) {
+            // Change all squares to the same color
+            squares[i].style.backgroundColor = this.style.backgroundColor;
+            // Remove shrink transform class
+            squares[i].classList.remove("shrink");
+        }
+        // Display feedback
         message.textContent = "Correct!"
     } else {
-        // alert("wrong");
+    // When color codes do not match
+        // Hide picked square
         this.style.backgroundColor = "transparent";
+        // Add shrink transform class
+        this.classList.add("shrink");
+        // Display feedback
         message.textContent = "Try again!"
     }
 };
